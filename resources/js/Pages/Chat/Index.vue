@@ -17,7 +17,7 @@ export default {
     data() {
         return {
             rooms: [],
-            currentRoom: [],
+            currentRoom: null,
             messages: [],
         }
     },
@@ -45,6 +45,13 @@ export default {
         setRoom(room) {
             this.currentRoom = room
             this.getMessages()
+        },
+        findRoom(keyword) {
+            console.log(keyword)
+
+            this.rooms.filter(function (str) {
+                return str.indexOf(keyword) === -1;
+            });
         },
         async scrollDown() {
             await nextTick()
@@ -76,15 +83,15 @@ export default {
 
                     <div class="flex flex-row">
 
-                        <RoomList :rooms="rooms" @changeRoom="setRoom" />
+                        <RoomList :rooms="rooms" @searchRoom="findRoom" @changeRoom="setRoom" />
 
                         <div class="basis-10/12 p-3">
 
                             <div class="grid">
 
-                                <MessageList :messages="messages" :user="user" />
+                                <MessageList :room="currentRoom" :messages="messages" :user="user" />
 
-                                <MessageForm :room="currentRoom" @messageSent="getMessages" />
+                                <MessageForm v-if="currentRoom" :room="currentRoom" @messageSent="getMessages" />
 
                             </div>
 
